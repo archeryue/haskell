@@ -1,3 +1,11 @@
+import Data.List
+import Data.Char
+import qualified Data.Map as Map
+import qualified Data.Set as Set
+
+import Geometry
+import Geometry.Sphere
+
 doubleMe x = x + x
 
 doubleUs x y = x*2 + y*2
@@ -69,3 +77,23 @@ collatzChain 1= [1]
 collatzChain x
     | odd x = x : collatzChain (3 * x + 1)
     | even x = x : collatzChain (div x 2)
+
+encode :: Int -> String -> String
+encode shift msg = map chr shifted
+    where ords = map ord msg
+          shifted = map (+shift) ords
+
+encode' :: Int -> String -> String
+encode' shift msg =
+    let ords = map ord msg
+        shifted = map (+shift) ords
+    in map chr shifted
+
+{-findKey :: (Eq k) => k -> [(k,v)] -> v-}
+{-findKey key xs = snd . head . filter(\(k,v) -> key == k) $ xs-}
+
+findKey :: (Eq k) => k -> [(k,v)] -> Maybe v
+findKey key = foldr (\(k,v) acc -> if key == k then Just v else acc) Nothing
+
+fromList' :: (Ord k) => [(k,v)] -> Map.Map k v
+fromList' = foldr (\(k,v) acc -> Map.insert k v acc) Map.empty
