@@ -3,8 +3,10 @@ import Data.Char
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 
-import Geometry
-import Geometry.Sphere
+import GeometryCal
+import qualified Geometry.Sphere as Sphere
+
+import Shapes
 
 doubleMe x = x + x
 
@@ -97,3 +99,37 @@ findKey key = foldr (\(k,v) acc -> if key == k then Just v else acc) Nothing
 
 fromList' :: (Ord k) => [(k,v)] -> Map.Map k v
 fromList' = foldr (\(k,v) acc -> Map.insert k v acc) Map.empty
+
+data Person = Person { firstName :: String
+                     , lastName :: String
+                     , age :: Int
+                     } deriving (Eq, Show, Read)
+
+{-data Car = Car {company :: String, model :: String, year :: Int} deriving (Show)-}
+data Car a b c = Car {company :: a, model :: b, year :: c} deriving (Show)
+{-Car "Archer" "X1" 1992-}
+
+{-type String = [Char]-}
+type PhoneBook = [(String, String)]
+
+data LockerState = Taken | Free deriving (Show, Eq)
+type Code = String
+type LockerMap = Map.Map Int (LockerState, Code)
+
+lockerLookup :: Int -> LockerMap -> Either String Code
+lockerLookup lockerNumber map =
+    case Map.lookup lockerNumber map of
+        Nothing -> Left $ "Locker number " ++ show lockerNumber ++ " doesn't exist!"
+        Just (state, code) -> if state /= Taken
+                                then Right code
+                                else Left $ "Locker " ++ show lockerNumber ++ " is already taken!"
+
+lockers :: LockerMap
+lockers = Map.fromList
+    [(100,(Taken,"ZD39I"))
+    ,(101,(Free,"JAH3I"))
+    ,(103,(Free,"IQSA9"))
+    ,(105,(Free,"QOTSA"))
+    ,(109,(Taken,"893JJ"))
+    ,(110,(Taken,"99292"))
+    ]
